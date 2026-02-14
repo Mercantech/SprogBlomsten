@@ -1,0 +1,516 @@
+:root {
+  --bg: #faf9f7;
+  --text: #1a1a1a;
+  --text-dim: #5a5a5a;
+  --surface: rgba(0, 0, 0, 0.06);
+  --border: rgba(0, 0, 0, 0.12);
+  --border-strong: rgba(0, 0, 0, 0.3);
+}
+[data-theme="dark"] {
+  --bg: #0a0b0f;
+  --text: rgba(255, 255, 255, 0.9);
+  --text-dim: rgba(255, 255, 255, 0.5);
+  --surface: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.15);
+  --border-strong: rgba(255, 255, 255, 0.4);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  padding: 0;
+  position: relative;
+}
+h1 {
+  font-weight: 700;
+  font-size: clamp(2.25rem, 6vw, 3.25rem);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+.subtitle {
+  font-weight: 300;
+  font-size: clamp(1.1rem, 2.5vw, 1.35rem);
+  color: var(--text-dim);
+  margin-bottom: 0.75rem;
+}
+.diagram-row {
+  display: grid;
+  grid-template-columns: 1.15fr auto 0.85fr;
+  align-items: center;
+  justify-items: center;
+  gap: 1.25rem;
+  width: min(98vw, 1400px);
+  min-height: 70vh;
+  padding: 0 1rem;
+  flex: 1;
+}
+.diagram-row .postits-column { justify-self: end; }
+.diagram-row .diagram-wrap { justify-self: center; }
+.diagram-row .bubble-wrap { justify-self: start; }
+.postits-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: min(200px, 22vw);
+  flex-shrink: 0;
+}
+.postits-column h2 {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 0.15rem;
+  letter-spacing: 0.02em;
+}
+.postits-hint {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  margin-bottom: 0.5rem;
+}
+.postit {
+  padding: 0.85rem 1rem;
+  padding-left: 2.5rem;
+  position: relative;
+  border-radius: 2px;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1);
+  transform: rotate(-1deg);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+.postit.is-filter {
+  box-shadow: 0 0 0 2px currentColor, 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+.postit-lytteLaese.is-filter { box-shadow: 0 0 0 2px #60a5fa, 2px 2px 8px rgba(0, 0, 0, 0.2); }
+.postit-taleSkrive.is-filter { box-shadow: 0 0 0 2px #a78bfa, 2px 2px 8px rgba(0, 0, 0, 0.2); }
+.postit-snakkeSkriveSammen.is-filter { box-shadow: 0 0 0 2px #34d399, 2px 2px 8px rgba(0, 0, 0, 0.2); }
+.postit-formidling.is-filter { box-shadow: 0 0 0 2px #eab308, 2px 2px 8px rgba(0, 0, 0, 0.2); }
+.postit:nth-child(2) { transform: rotate(0.5deg); }
+.postit:nth-child(3) { transform: rotate(-0.7deg); }
+.postit:nth-child(4) { transform: rotate(1deg); }
+.postit:hover { transform: rotate(0) scale(1.02); }
+.postit-term {
+  font-weight: 700;
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.02em;
+}
+.postit-cefr {
+  font-weight: 500;
+  opacity: 0.85;
+  font-size: 0.9em;
+}
+.postit-factor {
+  font-weight: 500;
+  opacity: 0.95;
+}
+.postit-shape {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  cursor: help;
+  transition: transform 0.15s ease;
+}
+.postit-shape:hover { transform: translateY(-50%) scale(1.2); }
+/* Samme farvede shapes som forløb-overlay (lys baggrund, farvede symboler) */
+.postit-lytteLaese { background: rgba(96, 165, 250, 0.12); color: var(--text); }
+.postit-lytteLaese .postit-shape {
+  border-radius: 50%;
+  border: 2px solid #60a5fa;
+  background: transparent;
+}
+.postit-taleSkrive { background: rgba(167, 139, 250, 0.12); color: var(--text); }
+.postit-taleSkrive .postit-shape {
+  width: 0;
+  height: 0;
+  border-left: 0.5rem solid transparent;
+  border-right: 0.5rem solid transparent;
+  border-bottom: 1rem solid #a78bfa;
+  background: none;
+}
+.postit-snakkeSkriveSammen { background: rgba(52, 211, 153, 0.12); color: var(--text); }
+.postit-snakkeSkriveSammen .postit-shape {
+  border-radius: 0;
+  border: 2px solid #34d399;
+  background: transparent;
+}
+.postit-formidling { background: rgba(234, 179, 8, 0.12); color: var(--text); }
+.postit-formidling .postit-shape {
+  background: #eab308;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+.diagram-wrap {
+  width: min(95vw, 700px);
+  max-width: 100%;
+  overflow: hidden;
+  padding: 2.25rem;
+  flex-shrink: 0;
+  position: relative;
+}
+.diagram-svg-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 852 / 913;
+  min-height: 0;
+}
+.diagram-svg-wrap .diagram-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.5s ease;
+  pointer-events: auto;
+}
+.diagram-svg-wrap .diagram-svg.diagram-svg-active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+.diagram-svg-wrap .diagram-svg:not(.diagram-svg-active) {
+  opacity: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.forlob-overlay {
+  position: absolute;
+  top: 2.25rem;
+  left: 2.25rem;
+  right: 2.25rem;
+  bottom: 2.25rem;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.diagram-wrap.show-forloeb .forlob-overlay {
+  opacity: 1;
+  visibility: visible;
+}
+.forlob-region-box {
+  position: absolute;
+  display: flex;
+  pointer-events: auto;
+  transform: translate(-50%, -50%);
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.45rem 0.55rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-size: 0.72rem;
+  line-height: 1.35;
+  width: fit-content;
+  min-width: 90px;
+  max-width: 38%;
+  max-height: 48%;
+  overflow-x: visible;
+  overflow-y: auto;
+  color: #1a1a1a;
+}
+[data-theme="dark"] .forlob-region-box {
+  background: rgba(255, 255, 255, 0.95);
+  color: #1a1a1a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+/* Akademisk sprog – smaller, længere ud i venstre oval, wrap tekst og ikoner */
+.forlob-region-box.forlob-box-akademisk {
+  max-width: 22%;
+  font-size: 0.65rem;
+  padding: 0.35rem 0.4rem;
+  max-height: 42%;
+}
+.forlob-box-akademisk .forlob-item {
+  flex-wrap: wrap;
+}
+.forlob-box-akademisk .forlob-item-title {
+  flex: 1 1 100%;
+  max-width: 100%;
+}
+.forlob-box-akademisk .forlob-item-symbols {
+  flex-wrap: wrap;
+}
+.forlob-box-akademisk .forlob-symbol {
+  width: 0.45rem;
+  height: 0.45rem;
+}
+.forlob-box-akademisk .forlob-symbol.triangle {
+  border-left-width: 0.25rem;
+  border-right-width: 0.25rem;
+  border-bottom-width: 0.45rem;
+}
+.forlob-item {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.forlob-item-link {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.forlob-item-link:hover {
+  opacity: 0.85;
+}
+.forlob-item-title {
+  font-weight: 600;
+  flex: 1 1 auto;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+.forlob-item-symbols {
+  display: flex;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+.forlob-symbol {
+  width: 0.5rem;
+  height: 0.5rem;
+  flex-shrink: 0;
+  cursor: help;
+  transition: transform 0.15s ease;
+}
+.forlob-symbol:hover { transform: scale(1.3); }
+.forlob-symbol.circle { border-radius: 50%; border: 1.5px solid currentColor; background: transparent !important; }
+.forlob-symbol.triangle {
+  width: 0;
+  height: 0;
+  border-left: 0.28rem solid transparent;
+  border-right: 0.28rem solid transparent;
+  border-bottom: 0.5rem solid currentColor;
+  background: none !important;
+}
+.forlob-symbol.square { border: 1.5px solid currentColor; background: transparent !important; }
+.forlob-symbol.star {
+  background: currentColor;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+/* Farver for sprogfærdigheder (cirkel=blå, trekant=lilla, firkant=grøn, stjerne=gul) */
+.forlob-symbol-lytteLaese { color: #60a5fa !important; }
+.forlob-symbol-lytteLaese.circle { border-color: #60a5fa !important; }
+.forlob-symbol-taleSkrive { color: #a78bfa !important; }
+.forlob-symbol-taleSkrive.triangle { border-bottom-color: #a78bfa !important; }
+.forlob-symbol-snakkeSkriveSammen { color: #34d399 !important; }
+.forlob-symbol-snakkeSkriveSammen.square { border-color: #34d399 !important; }
+.forlob-symbol-formidling { color: #eab308 !important; }
+.forlob-symbol-formidling.star { background: #eab308 !important; background-color: #eab308 !important; }
+.diagram-wrap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.diagram-wrap svg path.clickable {
+  cursor: pointer;
+  transition: opacity 0.2s ease, filter 0.2s ease;
+}
+.diagram-wrap svg path.clickable:hover {
+  opacity: 0.92;
+  filter: brightness(1.08);
+}
+.diagram-wrap svg path.clickable.active {
+  filter: brightness(1.12);
+  opacity: 1;
+}
+.diagram-wrap svg path[fill="black"] { fill: #2d3748; }
+.diagram-wrap svg path[stroke="black"] { stroke: rgba(45, 55, 72, 0.12); }
+/* Kun ram tekstlabels (.svg-label), ikke cirklernes strokes eller anden SVG-struktur */
+[data-theme="dark"] .diagram-wrap svg path.svg-label { fill: rgba(255,255,255,0.9); }
+.bubble-wrap {
+  width: 0;
+  min-height: 200px;
+  overflow: hidden;
+  transition: width 0.25s ease;
+}
+.bubble-wrap.is-open {
+  width: min(380px, 90vw);
+  margin-left: 0;
+  overflow: visible;
+}
+.popup-bubble {
+  position: relative;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  width: clamp(300px, 40vmin, 500px);
+  max-height: 75vh;
+  min-height: 180px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  animation: popIn 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+.popup-bookmarks-list {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+.popup-bubble::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 28px;
+  border: 12px solid transparent;
+  border-right-color: var(--border);
+  border-top-width: 0;
+}
+.popup-bubble::after {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 29px;
+  border: 11px solid transparent;
+  border-right-color: var(--bg);
+  border-top-width: 0;
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.popup-title {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  color: var(--text);
+}
+.popup-bookmark {
+  margin-bottom: 0;
+}
+.bookmark-card {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.75rem;
+}
+.bookmark-card:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.bookmark-link {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: inherit;
+  text-decoration: none;
+  transition: background 0.2s, border-color 0.2s;
+  overflow: hidden;
+}
+.bookmark-link:hover {
+  border-color: var(--border-strong);
+}
+.bookmark-preview-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.91 / 1;
+  background: var(--surface);
+  overflow: hidden;
+}
+.bookmark-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.bookmark-preview[src=""],
+.bookmark-preview:not([src]) { display: none; }
+.bookmark-preview-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.bookmark-preview-wrap.loaded .bookmark-preview-placeholder { display: none; }
+.bookmark-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.bookmark-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  line-height: 1.3;
+}
+.bookmark-desc {
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  line-height: 1.35;
+}
+.bookmark-url {
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  word-break: break-all;
+}
+.bookmark-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.25rem 0;
+  align-items: center;
+}
+.bookmark-categories .forlob-symbol {
+  width: 0.6rem;
+  height: 0.6rem;
+}
+.bookmark-categories .forlob-symbol.triangle {
+  border-left-width: 0.32rem;
+  border-right-width: 0.32rem;
+  border-bottom-width: 0.55rem;
+}
+.hint {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+.theme-toggle-wrap {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 2rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.theme-toggle:hover { border-color: var(--border-strong); }
+.theme-toggle svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  padding: 0.15rem;
+  border-radius: 50%;
+  color: var(--text-dim);
+}
+html:not([data-theme="dark"]) .theme-toggle .icon-sun {
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.06);
+}
+html:not([data-theme="dark"]) .theme-toggle .icon-moon { color: var(--text-dim); }
+[data-theme="dark"] .theme-toggle .icon-moon {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.06);
+}
+[data-theme="dark"] .theme-toggle .icon-sun { color: var(--text-dim); }
