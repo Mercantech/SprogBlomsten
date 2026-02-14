@@ -36,7 +36,7 @@
     lytteLaese: { udtryk: 'Lytte/Læse', term: 'Reception', factor: 'Receptiv sproglig aktivitet' },
     taleSkrive: { udtryk: 'Tale/Skrive', term: 'Produktion', factor: 'Produktiv sproglig aktivitet' },
     snakkeSkriveSammen: { udtryk: 'Samarbejde', term: 'Interaktion', factor: 'Interaktion og samarbejde' },
-    formidling: { udtryk: 'Anvende', term: 'Mediering', factor: 'Formidle og præsentere indhold' }
+    formidling: { udtryk: 'Anvende Teori', term: 'Mediering', factor: 'Formidle og præsentere indhold' }
   };
 
   const FILL_TO_REGION = {
