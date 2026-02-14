@@ -23,6 +23,7 @@
     document.documentElement.setAttribute('data-theme', next === 'dark' ? 'dark' : '');
     try { localStorage.setItem(THEME_KEY, next); } catch {}
   });
+  
 
   const diagramWrap = document.getElementById('diagramWrap');
   const bubbleWrap = document.getElementById('bubbleWrap');
