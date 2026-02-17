@@ -73,6 +73,7 @@ h1 {
   margin-bottom: 0.5rem;
 }
 .postit {
+  --postit-rotate: -1deg;
   padding: 0.85rem 1rem;
   padding-left: 2.5rem;
   position: relative;
@@ -80,9 +81,25 @@ h1 {
   font-size: 0.85rem;
   line-height: 1.35;
   box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1);
-  transform: rotate(-1deg);
+  transform: rotate(var(--postit-rotate));
   transition: transform 0.2s;
   cursor: pointer;
+  opacity: 0;
+  animation: placePostit 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.postit:nth-child(3) { --postit-rotate: -0.7deg; animation-delay: 0.5s; }
+.postit:nth-child(4) { --postit-rotate: 0.5deg; animation-delay: 0.62s; }
+.postit:nth-child(5) { --postit-rotate: -0.7deg; animation-delay: 0.74s; }
+.postit:nth-child(6) { --postit-rotate: 1deg; animation-delay: 0.86s; }
+@keyframes placePostit {
+  from {
+    opacity: 0;
+    transform: translateX(-56px) translateY(-10px) scale(0.88) rotate(var(--postit-rotate));
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) translateY(0) scale(1) rotate(var(--postit-rotate));
+  }
 }
 .postit.is-filter {
   box-shadow: 0 0 0 2px currentColor, 2px 2px 8px rgba(0, 0, 0, 0.2);
@@ -91,9 +108,6 @@ h1 {
 .postit-taleSkrive.is-filter { box-shadow: 0 0 0 2px #a78bfa, 2px 2px 8px rgba(0, 0, 0, 0.2); }
 .postit-snakkeSkriveSammen.is-filter { box-shadow: 0 0 0 2px #34d399, 2px 2px 8px rgba(0, 0, 0, 0.2); }
 .postit-formidling.is-filter { box-shadow: 0 0 0 2px #eab308, 2px 2px 8px rgba(0, 0, 0, 0.2); }
-.postit:nth-child(2) { transform: rotate(0.5deg); }
-.postit:nth-child(3) { transform: rotate(-0.7deg); }
-.postit:nth-child(4) { transform: rotate(1deg); }
 .postit:hover { transform: rotate(0) scale(1.02); }
 .postit-term {
   font-weight: 700;
@@ -161,6 +175,36 @@ h1 {
   width: 100%;
   aspect-ratio: 852 / 913;
   min-height: 0;
+}
+
+/* Blomst udfolder sig: hele animationen ~1,3 s (overlap først, derefter centrum og kronblade) */
+.diagram-svg path.bloom-petal {
+  opacity: 0;
+  transform: scale(0.4);
+  transform-origin: center;
+  transform-box: fill-box;
+  animation: petalUnfold 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.diagram-svg path.bloom-petal-0 { animation-delay: 0s; }
+.diagram-svg path.bloom-petal-1 { animation-delay: 0.15s; }
+.diagram-svg path.bloom-petal-2 { animation-delay: 0.3s; }
+.diagram-svg path.bloom-petal-3 { animation-delay: 0.45s; }
+.diagram-svg path.bloom-petal-4 { animation-delay: 0.6s; }
+.diagram-svg path.bloom-petal-5 { animation-delay: 0.75s; }
+.diagram-svg path.bloom-petal-6 { animation-delay: 0.9s; }
+@keyframes petalUnfold {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.diagram-svg path.bloom-label {
+  opacity: 0;
+  animation: labelFadeIn 0.35s ease-out 0.5s forwards;
+}
+@keyframes labelFadeIn {
+  to { opacity: 1; }
 }
 .diagram-svg-wrap .diagram-svg {
   position: absolute;

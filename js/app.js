@@ -172,19 +172,48 @@
     if (e.key === 'Escape' && bubbleWrap.classList.contains('is-open')) closePopup();
   });
 
+  document.addEventListener('click', (e) => {
+    if (!bubbleWrap.classList.contains('is-open')) return;
+    if (popupBubble.contains(e.target)) return;
+    if (e.target.closest('.diagram-wrap path.clickable')) return;
+    closePopup();
+  });
+
   const CENTER_FILL = '#B3E8D0'; /* Sprog i EUD – midterste overlap, bruges til at vise/skjule forløb */
   const DARK_LABEL_FILLS = ['black', '#000', '#000000', '#090909', '#231F20', '#333', '#333333', '#2d3748'];
+  /* Rækkefølge til udfoldning: overlap først (4,5,6) → centrum → kronblade */
+  const BLOOM_FILL_ORDER = ['#FFC8A1', '#B0CAE3', '#B3E7CB', '#B3E8D0', '#FEEFAE', '#B0F0F2', '#FEB5E2'];
+
   function setupSvg(svg) {
     if (!svg) return null;
     svg.classList.add('diagram-svg');
     svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     const darkRect = svg.querySelector('rect[fill="#1E1E1E"]');
     if (darkRect) darkRect.remove();
-    const paths = svg.querySelectorAll('path[fill]');
+    const paths = svg.querySelectorAll('path');
+    let lastRegionIndex = null;
     paths.forEach(path => {
+      if (path.closest('mask')) return;
       const fill = (path.getAttribute('fill') || '').trim().toLowerCase();
       const fillNorm = normalizeFill(path.getAttribute('fill'));
       const key = makeRegionKey(path.getAttribute('fill'));
+      const stroke = (path.getAttribute('stroke') || '').trim();
+      const isDarkLabel = DARK_LABEL_FILLS.some(d => fill === d || fill === d.toLowerCase());
+      /* Stroke-ring uden egen fyld: animér sammen med den sidst sete region (oval/overlap) */
+      if (!fill || fill === 'none') {
+        if (stroke && lastRegionIndex !== null) {
+          path.classList.add('bloom-petal', `bloom-petal-${lastRegionIndex}`);
+        }
+        return;
+      }
+      /* Bloom-klasse til udfoldning: hver region får sin rækkefølge */
+      if (fillNorm) {
+        const bloomIndex = BLOOM_FILL_ORDER.findIndex(c => c.toUpperCase() === fillNorm.toUpperCase());
+        if (bloomIndex >= 0) {
+          path.classList.add('bloom-petal', `bloom-petal-${bloomIndex}`);
+          lastRegionIndex = bloomIndex;
+        }
+      }
       /* Sprog i EUD – centrum: klik viser/skjuler forløb */
       if (fillNorm && fillNorm.toUpperCase() === CENTER_FILL.toUpperCase()) {
         path.classList.add('clickable', 'center-toggle');
@@ -224,8 +253,8 @@
           path.classList.add('active');
           openPopup(key, FILL_TO_REGION[key]);
         });
-      } else if (DARK_LABEL_FILLS.some(d => fill === d || fill === d.toLowerCase())) {
-        path.classList.add('svg-label');
+      } else if (isDarkLabel) {
+        path.classList.add('svg-label', 'bloom-label');
       }
     });
     return svg;
@@ -249,10 +278,12 @@
   document.querySelectorAll('.postit[data-category]').forEach(el => {
     el.addEventListener('click', () => {
       const cat = el.dataset.category;
-      filterCategory = filterCategory === cat ? null : cat;
+      const wasActive = filterCategory === cat;
+      filterCategory = wasActive ? null : cat;
       try { localStorage.setItem(FILTER_KEY, filterCategory || ''); } catch {}
       updateFilterUI();
       buildForlobOverlay();
+      if (wasActive) closePopup();
     });
     el.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
